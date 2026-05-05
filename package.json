@@ -1,0 +1,18 @@
+{
+  "name": "masty-tunnel",
+  "version": "1.0.0",
+  "description": "Lightweight local tunneling CLI",
+  "main": "server/index.js",
+  "bin": {
+    "masty": "./client/cli.js"
+  },
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "keywords": ["tunnel", "cli", "localhost", "proxy"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.20.0"
+  }
+}
