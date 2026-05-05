@@ -14,8 +14,12 @@ module.exports = {
   remove(id) {
     tunnels.delete(id);
   },
-  setPending(id, res) {
-    pending.set(id, res);
+  setPending(id, res, meta) {
+    res.on('close', () => {
+      pending.delete(id);
+    });
+
+    pending.set(id, { res, meta });
   },
   getPending(id) {
     return pending.get(id);

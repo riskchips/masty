@@ -2,11 +2,11 @@ const { createHTTPServer } = require('./httpServer');
 const { createWSServer } = require('./wsServer');
 const tunnelManager = require('./tunnelManager');
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-const httpServer = createHTTPServer(tunnelManager);
-createWSServer(httpServer, tunnelManager);
+const server = createHTTPServer(tunnelManager);
+createWSServer(server, tunnelManager);
 
-httpServer.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log('Server running on port', PORT);
 });

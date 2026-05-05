@@ -22,6 +22,7 @@ function createWSServer(server, tunnelManager) {
         if (!entry) return;
 
         const { res, meta } = entry;
+
         const body = Buffer.from(data.body, 'base64');
 
         res.writeHead(data.status, data.headers);
@@ -38,6 +39,8 @@ function createWSServer(server, tunnelManager) {
     ws.on('close', () => {
       tunnelManager.remove(id);
     });
+
+    ws.on('error', () => {});
   });
 }
 
