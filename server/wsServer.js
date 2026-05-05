@@ -18,14 +18,18 @@ function createWSServer(server, tunnelManager) {
       const data = JSON.parse(msg);
 
       if (data.type === 'response') {
-        const res = tunnelManager.getPending(data.requestId);
+        const entry = tunnelManager.getPending(data.requestId);
+        if (!entry) return;
 
-        if (!res) return;
-
+        const { res, meta } = entry;
         const body = Buffer.from(data.body, 'base64');
 
         res.writeHead(data.status, data.headers);
         res.end(body);
+
+        process.stdout.write(
+          `\x1b[90m[${meta.time}]\x1b[0m \x1b[36m${meta.ip}\x1b[0m ${meta.method} ${meta.path} → ${data.status}\n`
+        );
 
         tunnelManager.removePending(data.requestId);
       }

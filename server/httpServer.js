@@ -10,12 +10,18 @@ function createHTTPServer(tunnelManager) {
       return res.end('Tunnel not found');
     }
 
+    const ip = req.socket.remoteAddress || 'unknown';
+    const time = new Date().toLocaleTimeString();
+
+    process.stdout.write(
+      `\x1b[90m[${time}]\x1b[0m \x1b[36m${ip}\x1b[0m ${req.method} ${req.url}\n`
+    );
+
     let body = [];
 
     req.on('data', chunk => body.push(chunk));
     req.on('end', () => {
       const client = tunnelManager.get(id);
-
       const requestId = Math.random().toString(36).slice(2);
 
       client.send(JSON.stringify({
@@ -27,7 +33,7 @@ function createHTTPServer(tunnelManager) {
         body: Buffer.concat(body).toString('base64')
       }));
 
-      tunnelManager.setPending(requestId, res);
+      tunnelManager.setPending(requestId, res, { ip, time, method: req.method, path: req.url });
     });
   });
 }

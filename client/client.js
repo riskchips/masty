@@ -1,6 +1,5 @@
 const WebSocket = require('ws');
 const forwardRequest = require('./forwarder');
-const logger = require('./utils/logger');
 
 function startClient(port) {
   const ws = new WebSocket('wss://masty.onrender.com');
@@ -9,7 +8,8 @@ function startClient(port) {
     const data = JSON.parse(msg);
 
     if (data.type === 'init') {
-      logger(`Public URL: https://masty.onrender.com/${data.id}`);
+      console.log(`\x1b[36mURL:\x1b[0m https://masty.onrender.com/${data.id}`);
+      console.log(`Forwarding → localhost:${port}\n`);
     }
 
     if (data.type === 'request') {
