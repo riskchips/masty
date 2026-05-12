@@ -1,7 +1,16 @@
 const http = require('http');
 
+function statusColor(code) {
+  if (code >= 500) return '\x1b[31m';
+  if (code >= 400) return '\x1b[33m';
+  if (code >= 300) return '\x1b[36m';
+  return '\x1b[32m';
+}
+
 function createHTTPServer(tunnelManager) {
   return http.createServer((req, res) => {
+    const start = Date.now();
+
     const parts = req.url.split('/');
     const id = parts[1];
 
@@ -10,7 +19,8 @@ function createHTTPServer(tunnelManager) {
       return res.end('Tunnel not found');
     }
 
-    const client = tunnelManager.get(id);
+    const tunnel = tunnelManager.get(id);
+    const client = tunnel.ws;
 
     if (!client || client.readyState !== 1) {
       res.writeHead(502);
@@ -20,22 +30,27 @@ function createHTTPServer(tunnelManager) {
     const ip = req.socket.remoteAddress || 'unknown';
     const time = new Date().toLocaleTimeString();
 
-    process.stdout.write(
-      `\x1b[90m[${time}]\x1b[0m \x1b[36m${ip}\x1b[0m ${req.method} ${req.url}\n`
-    );
-
     let body = [];
 
     req.on('data', chunk => body.push(chunk));
+
     req.on('end', () => {
+      const rawBody = Buffer.concat(body);
+
       const requestId = Math.random().toString(36).slice(2);
 
-      tunnelManager.setPending(requestId, res, {
-        ip,
-        time,
-        method: req.method,
-        path: req.url
+      tunnelManager.setPending(requestId, {
+        res,
+        meta: {
+          ip,
+          time,
+          method: req.method,
+          path: req.url,
+          start
+        }
       });
+
+      tunnelManager.increment(id, rawBody.length);
 
       client.send(JSON.stringify({
         type: 'request',
@@ -43,17 +58,23 @@ function createHTTPServer(tunnelManager) {
         method: req.method,
         path: '/' + parts.slice(2).join('/'),
         headers: req.headers,
-        body: Buffer.concat(body).toString('base64')
+        body: rawBody.toString('base64')
       }));
 
       setTimeout(() => {
-        const entry = tunnelManager.getPending(requestId);
-        if (entry) {
-          entry.res.writeHead(504);
-          entry.res.end('Tunnel timeout');
-          tunnelManager.removePending(requestId);
-        }
-      }, 10000);
+        const pending = tunnelManager.getPending(requestId);
+
+        if (!pending) return;
+
+        pending.res.writeHead(504);
+        pending.res.end('Tunnel timeout');
+
+        console.log(
+          `\x1b[90m[${time}]\x1b[0m \x1b[36m${ip}\x1b[0m ${req.method} ${req.url} ${statusColor(504)}504\x1b[0m`
+        );
+
+        tunnelManager.removePending(requestId);
+      }, 15000);
     });
   });
 }

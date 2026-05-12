@@ -14,7 +14,7 @@ if (args[0] === 'run') {
   startClient(port);
 
   process.on('SIGINT', () => {
-    console.log('\nStopping tunnel...');
+    console.log('\nTunnel stopped\n');
     process.exit();
   });
 }
