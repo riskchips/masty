@@ -16,9 +16,6 @@ function createWSServer(server, tunnelManager) {
 
     tunnelManager.add(id, ws);
 
-    console.log(`\nTunnel connected: ${id}`);
-    console.log(`Active tunnels: ${tunnelManager.all().size}\n`);
-
     ws.send(JSON.stringify({
       type: 'init',
       id
@@ -27,7 +24,10 @@ function createWSServer(server, tunnelManager) {
     ws.on('message', (msg) => {
       const data = JSON.parse(msg);
 
-      if (data.type === 'pong') return;
+      if (data.type === 'pong') {
+        ws.latency = Date.now() - data.timestamp;
+        return;
+      }
 
       if (data.type === 'response') {
         const entry = tunnelManager.getPending(data.requestId);
@@ -43,9 +43,16 @@ function createWSServer(server, tunnelManager) {
         res.writeHead(data.status, data.headers);
         res.end(body);
 
-        console.log(
-          `\x1b[90m[${meta.time}]\x1b[0m \x1b[36m${meta.ip}\x1b[0m ${meta.method} ${meta.path} ${statusColor(data.status)}${data.status}\x1b[0m ${duration}ms`
-        );
+        ws.send(JSON.stringify({
+          type: 'log',
+          ip: meta.ip,
+          method: meta.method,
+          path: meta.path,
+          status: data.status,
+          duration,
+          time: meta.time,
+          latency: ws.latency || 0
+        }));
 
         tunnelManager.removePending(data.requestId);
       }
@@ -53,9 +60,6 @@ function createWSServer(server, tunnelManager) {
 
     ws.on('close', () => {
       tunnelManager.remove(id);
-
-      console.log(`Tunnel disconnected: ${id}`);
-      console.log(`Active tunnels: ${tunnelManager.all().size}`);
     });
 
     ws.on('error', () => {});
