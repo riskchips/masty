@@ -1,12 +1,5 @@
 const http = require('http');
 
-function statusColor(code) {
-  if (code >= 500) return '\x1b[31m';
-  if (code >= 400) return '\x1b[33m';
-  if (code >= 300) return '\x1b[36m';
-  return '\x1b[32m';
-}
-
 function createHTTPServer(tunnelManager) {
   return http.createServer((req, res) => {
     const start = Date.now();
@@ -27,7 +20,13 @@ function createHTTPServer(tunnelManager) {
       return res.end('Client not connected');
     }
 
-    const ip = req.socket.remoteAddress || 'unknown';
+    const ip =
+      req.headers['cf-connecting-ip'] ||
+      req.headers['true-client-ip'] ||
+      req.headers['x-forwarded-for']?.split(',')[0] ||
+      req.socket.remoteAddress ||
+      'unknown';
+
     const time = new Date().toLocaleTimeString();
 
     let body = [];
@@ -46,11 +45,10 @@ function createHTTPServer(tunnelManager) {
           time,
           method: req.method,
           path: req.url,
-          start
+          start,
+          size: rawBody.length
         }
       });
-
-      tunnelManager.increment(id, rawBody.length);
 
       client.send(JSON.stringify({
         type: 'request',
@@ -68,10 +66,6 @@ function createHTTPServer(tunnelManager) {
 
         pending.res.writeHead(504);
         pending.res.end('Tunnel timeout');
-
-        console.log(
-          `\x1b[90m[${time}]\x1b[0m \x1b[36m${ip}\x1b[0m ${req.method} ${req.url} ${statusColor(504)}504\x1b[0m`
-        );
 
         tunnelManager.removePending(requestId);
       }, 15000);
