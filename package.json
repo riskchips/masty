@@ -1,6 +1,6 @@
 {
   "name": "masty-tunnel",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Lightweight local tunneling CLI",
   "main": "server/index.js",
   "bin": {
