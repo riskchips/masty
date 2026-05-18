@@ -400,9 +400,9 @@ Contributions welcome! Please feel free to submit a Pull Request.
 
 ## 📮 Support
 
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/yourusername/masty-tunnel/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/yourusername/masty-tunnel/discussions)
-- 📧 **Email**: support@masty.dev
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/riskchips/masty/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/riskchips/masty/discussions)
+- 📧 **Linkedin**: [LinkedIn](https://www.linkedin.com/in/arnabdasdev)
 
 ---
 
@@ -416,7 +416,7 @@ Contributions welcome! Please feel free to submit a Pull Request.
 
 ## 📊 Version History
 
-### v2.0.0 (Latest)
+### v2.0.1 (Latest)
 - ✨ Advanced analytics dashboard
 - ✨ Request history & filtering
 - ✨ Rate limiting (100 req/min)
