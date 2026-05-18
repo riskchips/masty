@@ -53,12 +53,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/masty-tunnel"
+    "url": "https://github.com/riskchips/masty"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/masty-tunnel/issues"
+    "url": "https://github.com/riskchips/masty/issues"
   },
-  "homepage": "https://github.com/yourusername/masty-tunnel#readme",
+  "homepage": "https://github.com/riskchips/masty#readme",
   "engines": {
     "node": ">=12.0.0"
   },

@@ -134,6 +134,7 @@ function createHTTPServer(tunnelManager) {
         tunnelManager.removePending(requestId);
       }, 15000);
     });
-module.exports = { createHTTPServer };
+  });
+}
 
 module.exports = { createHTTPServer };
