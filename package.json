@@ -4,11 +4,12 @@
   "description": "Advanced lightweight local tunneling CLI for exposing localhost to the internet with analytics, rate limiting, and request inspection",
   "main": "server/index.js",
   "bin": {
-    "masty": "./client/cli.js"
+    "masty": "client/cli.js"
   },
   "scripts": {
     "start": "node server/index.js",
-    "test": "node tests/test.js"
+    "test": "node tests/test.js",
+    "prepublishOnly": "npm test"
   },
   "keywords": [
     "tunnel",
@@ -49,11 +50,11 @@
     "public-tunnel",
     "http-tunnel"
   ],
-  "author": "",
+  "author": "riskchips",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/riskchips/masty"
+    "url": "git+https://github.com/riskchips/masty.git"
   },
   "bugs": {
     "url": "https://github.com/riskchips/masty/issues"
