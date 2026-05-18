@@ -1,24 +1,72 @@
 {
   "name": "masty-tunnel",
-  "version": "1.1.4",
-  "description": "Lightweight local tunneling CLI",
+  "version": "2.0.0",
+  "description": "Advanced lightweight local tunneling CLI for exposing localhost to the internet with analytics, rate limiting, and request inspection",
   "main": "server/index.js",
   "bin": {
     "masty": "./client/cli.js"
   },
   "scripts": {
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "test": "node tests/test.js"
   },
   "keywords": [
     "tunnel",
-    "cli",
+    "tunneling",
     "localhost",
-    "proxy"
+    "proxy",
+    "cli",
+    "local",
+    "expose",
+    "public-url",
+    "webhook",
+    "ngrok",
+    "development",
+    "testing",
+    "api",
+    "server",
+    "http",
+    "websocket",
+    "forwarding",
+    "port-forwarding",
+    "reverse-proxy",
+    "network",
+    "analytics",
+    "monitoring",
+    "rate-limiting",
+    "request-logging",
+    "developer-tools",
+    "devops",
+    "networking",
+    "real-time",
+    "performance",
+    "latency",
+    "bandwidth",
+    "inspect",
+    "debug",
+    "ngrok-alternative",
+    "expose-local-server",
+    "public-tunnel",
+    "http-tunnel"
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/masty-tunnel"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/masty-tunnel/issues"
+  },
+  "homepage": "https://github.com/yourusername/masty-tunnel#readme",
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "dependencies": {
     "crypto": "^1.0.1",
     "ws": "^8.20.0"
+  },
+  "devDependencies": {
+    "assert": "^2.0.0"
   }
 }

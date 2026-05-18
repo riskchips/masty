@@ -43,6 +43,16 @@ function createWSServer(server, tunnelManager) {
         res.writeHead(data.status, data.headers);
         res.end(body);
 
+        // Record analytics
+        tunnelManager.recordRequest(meta.id, {
+          method: meta.method,
+          path: meta.path,
+          status: data.status,
+          duration,
+          latency: ws.latency || 0,
+          ip: meta.ip
+        });
+
         ws.send(JSON.stringify({
           type: 'log',
           ip: meta.ip,

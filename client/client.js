@@ -8,25 +8,31 @@ function colorStatus(code) {
   return '\x1b[32m';
 }
 
-function connect(port) {
+function connect(port, options = {}) {
   const ws = new WebSocket('wss://masty.onrender.com');
 
   let currentLatency = 0;
+  let requestCount = 0;
+  let tunnelId = null;
 
   ws.on('open', () => {
     console.clear();
 
-    console.log('\x1b[1mMASTY TUNNEL\x1b[0m\n');
-    console.log('\x1b[32mConnected to server\x1b[0m\n');
+    console.log('\x1b[1mMASTY TUNNEL v2\x1b[0m\n');
+    console.log('\x1b[32m✓ Connected to server\x1b[0m\n');
   });
 
   ws.on('message', async (msg) => {
     const data = JSON.parse(msg);
 
     if (data.type === 'init') {
-      console.log(`URL        https://masty.onrender.com/${data.id}`);
-      console.log(`Forward    localhost:${port}`);
-      console.log(`Latency    calculating...\n`);
+      tunnelId = data.id;
+      console.log(`\x1b[36m🔗 Tunnel URL\x1b[0m     https://masty.onrender.com/${data.id}`);
+      console.log(`\x1b[36m📍 Forward To\x1b[0m     localhost:${port}`);
+      console.log(`\x1b[36m⚡ Latency\x1b[0m        calculating...\n`);
+      console.log(`\x1b[90mAnalytics: https://masty.onrender.com/analytics/${data.id}`);
+      console.log(`History:   https://masty.onrender.com/history/${data.id}\x1b[0m\n`);
+      console.log(`\x1b[1mLive Requests:\x1b[0m\n`);
     }
 
     if (data.type === 'ping') {
@@ -41,13 +47,15 @@ function connect(port) {
     }
 
     if (data.type === 'log') {
+      requestCount++;
       process.stdout.write(
         `\x1b[90m[${data.time}]\x1b[0m ` +
         `\x1b[36m${data.ip}\x1b[0m ` +
         `${data.method} ${data.path} ` +
         `${colorStatus(data.status)}${data.status}\x1b[0m ` +
         `\x1b[90m${data.duration}ms\x1b[0m ` +
-        `\x1b[35m${data.latency}ms\x1b[0m\n`
+        `\x1b[35m${data.latency}ms\x1b[0m ` +
+        `\x1b[33m(#${requestCount})\x1b[0m\n`
       );
 
       return;
