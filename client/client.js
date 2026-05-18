@@ -47,19 +47,20 @@ function connect(port, options = {}) {
     }
 
     if (data.type === 'log') {
-      requestCount++;
-      process.stdout.write(
-        `\x1b[90m[${data.time}]\x1b[0m ` +
-        `\x1b[36m${data.ip}\x1b[0m ` +
-        `${data.method} ${data.path} ` +
-        `${colorStatus(data.status)}${data.status}\x1b[0m ` +
-        `\x1b[90m${data.duration}ms\x1b[0m ` +
-        `\x1b[35m${data.latency}ms\x1b[0m ` +
-        `\x1b[33m(#${requestCount})\x1b[0m\n`
-      );
+  requestCount++;
 
-      return;
-    }
+  process.stdout.write(
+    `\x1b[90m[${new Date().toLocaleTimeString()}]\x1b[0m ` +
+    `\x1b[36m${data.ip}\x1b[0m ` +
+    `${data.method} ${data.path} ` +
+    `${colorStatus(data.status)}${data.status}\x1b[0m ` +
+    `\x1b[90m${data.duration}ms\x1b[0m ` +
+    `\x1b[35m${data.latency}ms\x1b[0m ` +
+    `\x1b[33m(#${requestCount})\x1b[0m\n`
+  );
+
+  return;
+}
 
     if (data.type === 'request') {
       const response = await forwardRequest(port, data);
